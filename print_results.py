@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 # */AIPND-revision/intropyproject-classify-pet-images/print_results.py
 #                                                                             
-# PROGRAMMER: 
-# DATE CREATED:
-# REVISED DATE: 
+# PROGRAMMER: Bhavya Singh
+# DATE CREATED: 1 July 2023
+# REVISED DATE: 1 July 2023
 # PURPOSE: Create a function print_results that prints the results statistics
 #          from the results statistics dictionary (results_stats_dic). It 
 #          should also allow the user to be able to print out cases of misclassified
@@ -26,13 +26,7 @@
 #         This function does not output anything other than printing a summary
 #         of the final results.
 ##
-# TODO 6: Define print_results function below, specifically replace the None
-#       below by the function definition of the print_results function. 
-#       Notice that this function doesn't to return anything because it  
-#       prints a summary of the results using results_dic and results_stats_dic
-# 
-def print_results(results_dic, results_stats_dic, model, 
-                  print_incorrect_dogs = False, print_incorrect_breed = False):
+def print_results(results_dic, results_stats_dic, model, print_incorrect_dogs = False, print_incorrect_breed = False):
     """
     Prints summary results on the classification and then prints incorrectly 
     classified dogs and incorrectly classified dog breeds if user indicates 
@@ -49,7 +43,7 @@ def print_results(results_dic, results_stats_dic, model,
                             'as-a' dog and 0 = Classifier classifies image  
                             'as-NOT-a' dog.
       results_stats_dic - Dictionary that contains the results statistics (either
-                   a  percentage or a count) where the key is the statistic's 
+                   a  percentage or a count) where the key is the statistic's
                      name (starting with 'pct' for percentage or 'n' for count)
                      and the value is the statistic's value 
       model - Indicates which CNN model architecture will be used by the 
@@ -61,6 +55,25 @@ def print_results(results_dic, results_stats_dic, model,
                               False doesn't print anything(default) (bool) 
     Returns:
            None - simply printing results.
-    """    
-    None
-                
+    """
+    print("\n\n*** Results Summary for CNN Model Architecture", model.upper(), "***")
+    print("{:20}: {:3d}".format('N Images', results_stats_dic['n_images']))
+    print("{:20}: {:3d}".format('N Dog Images', results_stats_dic['n_dogs_img']))
+    print("{:20}: {:3d}".format('N Not-Dog Images', results_stats_dic['n_notdogs_img']))
+
+    for i in results_stats_dic:
+        if i.startswith('p'):
+            print("{}: {}".format(i, results_stats_dic[i]))
+
+    if print_incorrect_dogs and ((results_stats_dic['n_correct_dogs'] + results_stats_dic['n_correct_notdogs']) != results_stats_dic['n_images']):
+        print("\nIncorrect Dog/Not Dog Assignments: ")
+        for i in results_dic:
+            if sum(results_dic[i][3:]) == 1:
+                print("Real: {:>26}   Classifier: {:>30}".format(results_dic[i][0], results_dic[i][1]))
+
+    if print_incorrect_breed and (results_stats_dic['n_correct_dogs'] != results_stats_dic['n_correct_breed']):
+        print("\nIncorrect Dog Breed Assignments: ")
+        for i in results_dic:
+            if (sum(results_dic[i][3:]) == 2 and
+                    results_dic[i][2] == 0):
+                print("Real: {:>26}   Classifier: {:>30}".format(results_dic[i][0], results_dic[i][1]))

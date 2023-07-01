@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 # */AIPND-revision/intropyproject-classify-pet-images/adjust_results4_isadog.py
 #                                                                             
-# PROGRAMMER: 
-# DATE CREATED:                                 
-# REVISED DATE: 
+# PROGRAMMER: Bhavya Singh
+# DATE CREATED: 1 July 2023
+# REVISED DATE: 1 July 2023
 # PURPOSE: Create a function adjust_results4_isadog that adjusts the results 
 #          dictionary to indicate whether or not the pet image label is of-a-dog, 
 #          and to indicate whether or not the classifier image label is of-a-dog.
@@ -31,12 +31,6 @@
 #           label isn't a dog.
 #
 ##
-# TODO 4: Define adjust_results4_isadog function below, specifically replace the None
-#       below by the function definition of the adjust_results4_isadog function. 
-#       Notice that this function doesn't return anything because the 
-#       results_dic dictionary that is passed into the function is a mutable 
-#       data type so no return is needed.
-# 
 def adjust_results4_isadog(results_dic, dogfile):
     """
     Adjusts the results dictionary to determine if classifier correctly 
@@ -66,5 +60,27 @@ def adjust_results4_isadog(results_dic, dogfile):
                maltese) (string - indicates text file's filename)
     Returns:
            None - results_dic is mutable data type so no return needed.
-    """           
-    None
+    """
+    name_dic = dict()
+
+    with open(dogfile, "r") as infile:
+        breed = infile.readline()
+
+        while breed != "":
+            breed = breed.rstrip()
+            if breed not in name_dic:
+                name_dic[breed] = 1
+
+            breed = infile.readline()
+
+        for i in results_dic:
+            if results_dic[i][0] in name_dic:
+                if results_dic[i][1] in name_dic:
+                    results_dic[i].extend((1, 1))
+                else:
+                    results_dic[i].extend((1, 0))
+            else:
+                if results_dic[i][1] in name_dic:
+                    results_dic[i].extend((0, 1))
+                else:
+                    results_dic[i].extend((0, 0))
